@@ -1,4 +1,4 @@
-## react-app-template
+## image-platform-react
 
 Шаблон **React** приложения включающий:
 
