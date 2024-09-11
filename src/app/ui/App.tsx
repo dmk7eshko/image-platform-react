@@ -1,3 +1,5 @@
+import { AuthPage } from '../../pages/authPage/ui/authPage';
+
 export const App = () => {
-  return <>Hello, react-app-template!</>;
+  return <AuthPage />;
 };
