@@ -1,44 +1,65 @@
-import React, { useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 
-import { Button } from '../../shared/Button/Button';
-import { Input } from '../../shared/Input/Input';
-import { Tab } from '../../shared/Tab/Tab';
-import { TabContent } from '../../shared/TabContent/TabContent';
-import { TabGroup } from '../../shared/TabGroup/TabGroup';
+import { Button } from '../../shared/Button';
+import { Input } from '../../shared/Input';
+import { Tab } from '../../shared/Tab';
+import { TabContent } from '../../shared/TabContent';
+import { TabGroup } from '../../shared/TabGroup';
 
-import {
-  FieldWrap,
-  ForgotPassword,
-  Form,
-  FormContainer,
-  Title,
-} from './styles';
-import { useFormEvents } from './useFormEvents';
+import { Styled } from './styles';
 
-type Props = {
-  labelText: string;
-  value?: string;
-};
-
-export const ModalForm: React.FC<Props> = () => {
-  const formRef = useRef<HTMLDivElement>(null);
+export const ModalForm = () => {
   const [activeTab, setActiveTab] = useState<string>('#signup');
 
-  useFormEvents(formRef);
-
-  const handleTabClick = (
-    e: React.MouseEvent<HTMLAnchorElement>,
-    target: string,
-  ) => {
-    e.preventDefault();
+  const handleTabClick = (target: string) => {
     setActiveTab(target);
   };
 
+  const handleEvent = (e: Event) => {
+    const target = e.target as HTMLInputElement | HTMLTextAreaElement;
+    const label = target.previousElementSibling as HTMLLabelElement;
+
+    if (!label) return;
+
+    if (e.type === 'keyup') {
+      if (target.value === '') {
+        label.classList.remove('active');
+      } else {
+        label.classList.add('active');
+      }
+    } else if (e.type === 'blur') {
+      if (target.value === '') {
+        label.classList.remove('active');
+      }
+    }
+  };
+
+  useEffect(() => {
+    const formElement = document.querySelector('.form-container');
+
+    if (!formElement) return;
+
+    const inputs = formElement.querySelectorAll('input, textarea');
+
+    inputs.forEach((input) => {
+      input.addEventListener('keyup', handleEvent);
+      input.addEventListener('blur', handleEvent);
+      input.addEventListener('focus', handleEvent);
+    });
+
+    return () => {
+      inputs.forEach((input) => {
+        input.removeEventListener('keyup', handleEvent);
+        input.removeEventListener('blur', handleEvent);
+        input.removeEventListener('focus', handleEvent);
+      });
+    };
+  }, []);
+
   return (
-    <FormContainer ref={formRef}>
+    <Styled.FormContainer className="form-container">
       <TabGroup>
         <Tab
-          className={activeTab === '#signup' ? 'active' : ''}
           onClick={handleTabClick}
           target="#signup"
           isActive={activeTab === '#signup'}
@@ -46,7 +67,6 @@ export const ModalForm: React.FC<Props> = () => {
           Регистрация
         </Tab>
         <Tab
-          className={activeTab === '#login' ? 'active' : ''}
           onClick={handleTabClick}
           target="#login"
           isActive={activeTab === '#login'}
@@ -56,40 +76,38 @@ export const ModalForm: React.FC<Props> = () => {
       </TabGroup>
 
       <TabContent id="#signup" activeTab={activeTab}>
-        <Title>Зарегистрируйся БЕСПЛАТНО</Title>
-        <Form action="/" method="post">
+        <Styled.Title>Зарегистрируйся БЕСПЛАТНО</Styled.Title>
+        <Styled.Form action="/" method="post">
           <div className="top-row">
-            <FieldWrap>
+            <Styled.FieldWrap>
               <Input labelText="Имя" />
-            </FieldWrap>
-            <FieldWrap>
+            </Styled.FieldWrap>
+            <Styled.FieldWrap>
               <Input labelText="Email" />
-            </FieldWrap>
+            </Styled.FieldWrap>
           </div>
-          <FieldWrap>
+          <Styled.FieldWrap>
             <Input labelText="Пароль" />
-          </FieldWrap>
-          <Button type="submit" className="button button-block">
-            Зарегистрироваться
-          </Button>
-        </Form>
+          </Styled.FieldWrap>
+          <Button type="submit">Зарегистрироваться</Button>
+        </Styled.Form>
       </TabContent>
 
       <TabContent id="#login" activeTab={activeTab}>
-        <Title>С возвращением!</Title>
-        <Form action="/" method="post">
-          <FieldWrap>
+        <Styled.Title>С возвращением!</Styled.Title>
+        <Styled.Form action="/" method="post">
+          <Styled.FieldWrap>
             <Input labelText="Email" />
-          </FieldWrap>
-          <FieldWrap>
+          </Styled.FieldWrap>
+          <Styled.FieldWrap>
             <Input labelText="Пароль" />
-          </FieldWrap>
-          <ForgotPassword>
+          </Styled.FieldWrap>
+          <Styled.ForgotPassword>
             <a href="#">Забыли пароль?</a>
-          </ForgotPassword>
-          <Button className="button button-block">Войти</Button>
-        </Form>
+          </Styled.ForgotPassword>
+          <Button>Войти</Button>
+        </Styled.Form>
       </TabContent>
-    </FormContainer>
+    </Styled.FormContainer>
   );
 };

@@ -1,23 +1,22 @@
+import React from 'react';
+
 import { TabStyled } from './styles';
 
 type Props = {
-  className?: string;
-  onClick: (e: React.MouseEvent<HTMLAnchorElement>, target: string) => void;
+  onClick: (target: string) => void;
   target: string;
   isActive: boolean;
   children: React.ReactNode;
 };
 
-export const Tab: React.FC<Props> = ({
-  className,
-  onClick,
-  target,
-  isActive,
-  children,
-}) => (
-  <TabStyled className={className} isActive={isActive}>
-    <a href={target} onClick={(e) => onClick(e, target)}>
+export const Tab = ({ onClick, target, isActive, children }: Props) => (
+  <TabStyled isActive={isActive}>
+    <button
+      type="button"
+      onClick={() => onClick(target)}
+      className={isActive ? 'active' : ''}
+    >
       {children}
-    </a>
+    </button>
   </TabStyled>
 );

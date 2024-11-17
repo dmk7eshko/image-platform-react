@@ -4,6 +4,6 @@ type Props = {
   children: React.ReactNode;
 };
 
-export const TabGroup: React.FC<Props> = ({ children }) => (
+export const TabGroup = ({ children }: Props) => (
   <TabGroupStyled>{children}</TabGroupStyled>
 );

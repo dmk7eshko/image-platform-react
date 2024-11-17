@@ -1,3 +1,5 @@
+import React from 'react';
+
 import { TabContentStyled } from './styles';
 
 type Props = {
@@ -6,7 +8,7 @@ type Props = {
   children: React.ReactNode;
 };
 
-export const TabContent: React.FC<Props> = ({ id, activeTab, children }) => (
+export const TabContent = ({ id, activeTab, children }: Props) => (
   <TabContentStyled
     id={id}
     style={{ display: activeTab === id ? 'block' : 'none' }}
