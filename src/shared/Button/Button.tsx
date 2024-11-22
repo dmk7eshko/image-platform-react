@@ -1,13 +1,19 @@
 import { ButtonStyled } from './styles';
 
 type Props = {
-  type?: 'button' | 'submit' | 'reset';
+  type?: 'button' | 'submit';
+  buttonType?: 'button' | 'link';
   onClick?: () => void;
   children: React.ReactNode;
 };
 
-export const Button = ({ type = 'button', onClick, children }: Props) => (
-  <ButtonStyled type={type} onClick={onClick}>
+export const Button = ({
+  type = 'button',
+  onClick,
+  children,
+  buttonType,
+}: Props) => (
+  <ButtonStyled type={type} onClick={onClick} buttonType={buttonType}>
     {children}
   </ButtonStyled>
 );

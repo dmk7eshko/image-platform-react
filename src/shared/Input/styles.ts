@@ -16,7 +16,10 @@ export const StyledInput = styled.input`
   cursor: pointer;
   font-size: 16px;
 
-  &:hover,
+  &:hover {
+    border: 2px solid #76c0ab;
+  }
+
   &:active,
   &:focus {
     border: 2px solid #179b77;
