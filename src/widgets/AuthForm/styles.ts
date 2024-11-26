@@ -1,5 +1,9 @@
 import styled from 'styled-components';
 
+interface FieldWrapProps {
+  isError: boolean;
+}
+
 export const Styled = {
   Title: styled.h2`
     font-size: 24px;
@@ -30,8 +34,11 @@ export const Styled = {
     flex-direction: column;
   `,
 
-  FieldWrap: styled.div`
-    margin-bottom: 15px;
+  FieldWrap: styled.div<FieldWrapProps>`
+    margin-bottom: 1rem;
+    input {
+      border-color: ${({ isError }) => (isError ? 'red' : '')};
+    }
   `,
 
   ForgotPassword: styled.p`
@@ -44,5 +51,11 @@ export const Styled = {
     a:hover {
       text-decoration: underline;
     }
+  `,
+
+  ErrorText: styled.p`
+    color: red;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
   `,
 };

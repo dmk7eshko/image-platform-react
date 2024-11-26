@@ -1,9 +1,9 @@
-import { ModalForm } from '../../../features/ModalForm';
+import { AuthForm } from '../../../widgets/AuthForm';
 
 export const AuthPage = () => {
   return (
     <>
-      <ModalForm />
+      <AuthForm />
     </>
   );
 };

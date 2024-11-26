@@ -1,6 +1,8 @@
 import styled from 'styled-components';
 
-export const ButtonStyled = styled.button`
+export const ButtonStyled = styled.button<{
+  buttonType?: 'button' | 'submit' | 'link';
+}>`
   background: #5cb85c;
   border: none;
   color: white;
@@ -19,4 +21,20 @@ export const ButtonStyled = styled.button`
   &:hover {
     background: #4cae4c;
   }
+
+  ${({ buttonType }) =>
+    buttonType === 'link' &&
+    `
+      background: none;
+      color: #007bff;
+      padding: 0;
+      text-transform: none;
+      font-size: inherit;
+      border: none;
+      cursor: pointer;
+      &:hover {
+        text-decoration: underline;
+        background: none;
+      }
+    `}
 `;
