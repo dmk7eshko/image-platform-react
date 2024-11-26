@@ -1,4 +1,4 @@
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 
 export const ButtonStyled = styled.button<{
   buttonType?: 'button' | 'submit' | 'link';
@@ -22,9 +22,9 @@ export const ButtonStyled = styled.button<{
     background: #4cae4c;
   }
 
-  ${(props) =>
-    props.buttonType === 'link' &&
-    css`
+  ${({ buttonType }) =>
+    buttonType === 'link' &&
+    `
       background: none;
       color: #007bff;
       padding: 0;
