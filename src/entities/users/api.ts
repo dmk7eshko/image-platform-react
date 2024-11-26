@@ -1,11 +1,7 @@
-const API_URL = 'http://localhost:8080/api/user';
+import { setCookie } from '../../shared/lib';
 
-const setCookie = (name: string, value: string, days: number) => {
-  const date = new Date();
-  date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
-  const expires = 'expires=' + date.toUTCString();
-  document.cookie = name + '=' + value + ';' + expires + ';path=/';
-};
+// const API_URL = `${process.env.BASE_URL}/user`;
+const API_URL = 'http://localhost:8080/api/user';
 
 export const registerUser = async (formData: {
   name: string;
@@ -24,7 +20,7 @@ export const registerUser = async (formData: {
     if (response.ok) {
       const data = await response.json();
       setCookie('authorization', data.token, 7);
-      return { success: true, message: 'Регистрация прошла успешно!' };
+      return { success: true, message: data.message };
     } else {
       const error = await response.json();
       return { success: false, message: error.message };
@@ -48,33 +44,16 @@ export const loginUser = async (loginData: {
       body: JSON.stringify(loginData),
     });
 
-    if (!response.ok) {
-      console.error('Response:', response);
-    }
-
-    const contentType = response.headers.get('Content-Type');
     if (response.ok) {
-      if (contentType && contentType.includes('application/json')) {
-        const data = await response.json();
-        setCookie('authorization', data.token, 7);
-        return { success: true, message: 'Вы успешно вошли в систему!' };
-      } else {
-        return {
-          success: false,
-          message: 'Unexpected content type: ' + contentType,
-        };
-      }
+      const data = await response.json();
+      setCookie('authorization', data.token, 7);
+      return { success: true, message: data.message };
     } else {
-      if (contentType && contentType.includes('application/json')) {
-        const errorData = await response.json();
-        return {
-          success: false,
-          message: errorData.message || 'Не удалось войти',
-        };
-      } else {
-        const errorText = await response.text();
-        return { success: false, message: `Ошибка: ${errorText}` };
-      }
+      const error = await response.json();
+      return {
+        success: false,
+        message: error.message,
+      };
     }
   } catch (error) {
     const err = error as Error;

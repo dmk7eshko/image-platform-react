@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { ChangeEvent, useState } from 'react';
 
 import { loginUser, registerUser } from '../../entities/users/api';
 import { Button } from '../../shared/Button';
@@ -7,6 +7,8 @@ import { Tab } from '../../shared/Tab';
 import { TabContent } from '../../shared/TabContent';
 import { TabGroup } from '../../shared/TabGroup';
 
+import { initialLoginData, initialRegisterData } from './constants';
+import { validateLoginForm, validateRegisterForm } from './lib';
 import { Styled } from './styles';
 
 interface FormErrors {
@@ -15,80 +17,27 @@ interface FormErrors {
   password?: string;
 }
 
-export const ModalForm = () => {
+export const AuthForm = () => {
   const [activeTab, setActiveTab] = useState<string>('signup');
-  const initialRegisterData = {
-    name: '',
-    email: '',
-    password: '',
-  };
-  const initialLoginData = {
-    email: '',
-    password: '',
-  };
   const [formData, setFormData] = useState(initialRegisterData);
   const [loginData, setLoginData] = useState(initialLoginData);
   const [errors, setErrors] = useState<FormErrors>({});
-
-  const validateName = (name: string) => {
-    const regex = /^[a-zA-Zа-яА-ЯёЁ]+([ -]?[a-zA-Zа-яА-ЯёЁ]+)*$/;
-    if (!regex.test(name)) {
-      return 'Имя может содержать только буквы, один пробел или дефис между словами';
-    }
-    return '';
-  };
-
-  const validateEmail = (email: string) => {
-    const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,3}$/;
-    if (!regex.test(email)) {
-      return 'Неправильный формат';
-    }
-    return '';
-  };
-
-  const validatePassword = (password: string) => {
-    if (password.length < 8) {
-      return 'Пароль должен содержать минимум 8 символов';
-    }
-    return '';
-  };
-
-  const validateRegisterForm = () => {
-    const newErrors: FormErrors = {};
-    newErrors.name = validateName(formData.name);
-    newErrors.email = validateEmail(formData.email);
-    newErrors.password = validatePassword(formData.password);
-
-    setErrors(newErrors);
-
-    return !newErrors.name && !newErrors.email && !newErrors.password;
-  };
-
-  const validateLoginForm = () => {
-    const newErrors: FormErrors = {};
-    newErrors.email = validateEmail(loginData.email);
-    newErrors.password = validatePassword(loginData.password);
-
-    setErrors(newErrors);
-
-    return !newErrors.email && !newErrors.password;
-  };
 
   const handleTabClick = (target: string) => {
     setActiveTab(target);
     setErrors({});
   };
 
-  const handleRegisterInputChange = (
-    e: React.ChangeEvent<HTMLInputElement>,
-  ) => {
-    const { name, value } = e.target;
+  const handleRegisterInputChange = ({
+    target: { name, value },
+  }: ChangeEvent<HTMLInputElement>) => {
     setFormData((prev) => ({ ...prev, [name]: value }));
     setErrors((prev) => ({ ...prev, [name]: '' }));
   };
 
-  const handleLoginInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
+  const handleLoginInputChange = ({
+    target: { name, value },
+  }: ChangeEvent<HTMLInputElement>) => {
     setLoginData((prev) => ({
       ...prev,
       [name]: value,
@@ -97,7 +46,7 @@ export const ModalForm = () => {
   };
 
   const handleRegister = async () => {
-    if (validateRegisterForm()) {
+    if (validateRegisterForm(formData, setErrors)) {
       const result = await registerUser(formData);
       alert(result.message);
       if (result.success) {
@@ -107,7 +56,7 @@ export const ModalForm = () => {
   };
 
   const handleLogin = async () => {
-    if (validateLoginForm()) {
+    if (validateLoginForm(loginData, setErrors)) {
       const result = await loginUser(loginData);
       alert(result.message);
       if (result.success) {
@@ -116,18 +65,21 @@ export const ModalForm = () => {
     }
   };
 
+  const handleSwitchToLogin = () => handleTabClick('login');
+  const handleSwitchToSignup = () => handleTabClick('signup');
+
   return (
     <Styled.FormContainer className="form-container">
       <TabGroup>
         <Tab
-          onClick={handleTabClick}
+          onClick={() => handleTabClick('signup')}
           target="signup"
           isActive={activeTab === 'signup'}
         >
           Регистрация
         </Tab>
         <Tab
-          onClick={handleTabClick}
+          onClick={() => handleTabClick('login')}
           target="login"
           isActive={activeTab === 'login'}
         >
@@ -173,7 +125,7 @@ export const ModalForm = () => {
           <Button type="button" onClick={handleRegister}>
             Зарегистрироваться
           </Button>
-          <Button buttonType="link" onClick={() => handleTabClick('login')}>
+          <Button buttonType="link" onClick={handleSwitchToLogin}>
             У меня есть аккаунт
           </Button>
         </Styled.Form>
@@ -211,7 +163,7 @@ export const ModalForm = () => {
           <Button type="button" onClick={handleLogin}>
             Войти
           </Button>
-          <Button buttonType="link" onClick={() => handleTabClick('signup')}>
+          <Button buttonType="link" onClick={handleSwitchToSignup}>
             Зарегистрироваться
           </Button>
         </Styled.Form>
