@@ -1,6 +1,7 @@
 import { ChangeEvent, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
-import { loginUser, registerUser } from '../../entities/users/api';
+import { ApiResponse, loginUser, registerUser } from '../../entities/users/api';
 import { Button } from '../../shared/Button';
 import { Input } from '../../shared/Input';
 import { Tab } from '../../shared/Tab';
@@ -22,6 +23,7 @@ export const AuthForm = () => {
   const [formData, setFormData] = useState(initialRegisterData);
   const [loginData, setLoginData] = useState(initialLoginData);
   const [errors, setErrors] = useState<FormErrors>({});
+  const navigate = useNavigate();
 
   const handleTabClick = (target: string) => {
     setActiveTab(target);
@@ -47,20 +49,20 @@ export const AuthForm = () => {
 
   const handleRegister = async () => {
     if (validateRegisterForm(formData, setErrors)) {
-      const result = await registerUser(formData);
-      alert(result.message);
-      if (result.success) {
-        setFormData(initialRegisterData);
+      const result: ApiResponse = await registerUser(formData);
+      if (result.success && result.token) {
+        localStorage.setItem('token', result.token);
+        navigate('/');
       }
     }
   };
 
   const handleLogin = async () => {
     if (validateLoginForm(loginData, setErrors)) {
-      const result = await loginUser(loginData);
-      alert(result.message);
-      if (result.success) {
-        setLoginData(initialLoginData);
+      const result: ApiResponse = await loginUser(loginData);
+      if (result.success && result.token) {
+        localStorage.setItem('token', result.token);
+        navigate('/');
       }
     }
   };
