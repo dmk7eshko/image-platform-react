@@ -1,19 +1,12 @@
 import { setCookie } from '../../shared/lib';
 
-// const API_URL = `${process.env.BASE_URL}/user`;
 const API_URL = 'http://localhost:8080/api/user';
-
-export interface ApiResponse {
-  success: boolean;
-  message: string;
-  token?: string;
-}
 
 export const registerUser = async (formData: {
   name: string;
   email: string;
   password: string;
-}): Promise<ApiResponse> => {
+}) => {
   try {
     const response = await fetch(`${API_URL}/register`, {
       method: 'POST',
@@ -40,7 +33,7 @@ export const registerUser = async (formData: {
 export const loginUser = async (loginData: {
   email: string;
   password: string;
-}): Promise<ApiResponse> => {
+}) => {
   try {
     const response = await fetch(`${API_URL}/login`, {
       method: 'POST',

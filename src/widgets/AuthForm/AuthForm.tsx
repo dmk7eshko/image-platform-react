@@ -1,7 +1,7 @@
 import { ChangeEvent, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { ApiResponse, loginUser, registerUser } from '../../entities/users/api';
+import { loginUser, registerUser } from '../../entities/users/api';
 import { Button } from '../../shared/Button';
 import { Input } from '../../shared/Input';
 import { Tab } from '../../shared/Tab';
@@ -50,9 +50,8 @@ export const AuthForm = () => {
 
   const handleRegister = async () => {
     if (validateRegisterForm(formData, setErrors)) {
-      const result: ApiResponse = await registerUser(formData);
-      if (result.success && result.token) {
-        localStorage.setItem('token', result.token);
+      const result = await registerUser(formData);
+      if (result.success) {
         navigate('/');
       }
     }
@@ -60,9 +59,8 @@ export const AuthForm = () => {
 
   const handleLogin = async () => {
     if (validateLoginForm(loginData, setErrors)) {
-      const result: ApiResponse = await loginUser(loginData);
-      if (result.success && result.token) {
-        localStorage.setItem('token', result.token);
+      const result = await loginUser(loginData);
+      if (result.success) {
         navigate('/');
       }
     }
