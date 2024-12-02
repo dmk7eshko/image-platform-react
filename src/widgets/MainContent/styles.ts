@@ -5,7 +5,7 @@ import { footerHeight, headerHeight } from '../../app/variables';
 export const Content = styled.main`
   min-height: calc(100vh - ${headerHeight} - ${footerHeight});
   padding: 2rem;
-  background-color: #f8f9fa;
+  background-color: #fbe9db;
 `;
 
 export const Section = styled.section`
