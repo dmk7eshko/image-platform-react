@@ -1,9 +1,10 @@
-import { ChangeEvent, useState } from 'react';
+import { ChangeEvent, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { loginUser, registerUser } from '../../entities/users/api';
 import { Button } from '../../shared/Button';
 import { Input } from '../../shared/Input';
+import { getCookie } from '../../shared/lib';
 import { Tab } from '../../shared/Tab';
 import { TabContent } from '../../shared/TabContent';
 import { TabGroup } from '../../shared/TabGroup';
@@ -25,6 +26,13 @@ export const AuthForm = () => {
   const [loginData, setLoginData] = useState(initialLoginData);
   const [errors, setErrors] = useState<FormErrors>({});
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const authCookie = getCookie('authorization');
+    if (authCookie) {
+      navigate('/');
+    }
+  }, [navigate]);
 
   const handleTabClick = (target: string) => {
     setActiveTab(target);
