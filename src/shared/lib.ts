@@ -4,3 +4,12 @@ export const setCookie = (name: string, value: string, days: number) => {
   const expires = 'expires=' + date.toUTCString();
   document.cookie = name + '=' + value + ';' + expires + ';path=/';
 };
+
+export const getCookie = (name: string): string | null => {
+  const matches = document.cookie.match(
+    new RegExp(
+      '(?:^|; )' + name.replace(/([.$?*|{}()[\]\\/+^])/g, '\\$1') + '=([^;]*)',
+    ),
+  );
+  return matches ? decodeURIComponent(matches[1]) : null;
+};

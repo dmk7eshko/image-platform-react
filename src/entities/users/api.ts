@@ -1,7 +1,22 @@
 import { setCookie } from '../../shared/lib';
 
-// const API_URL = `${process.env.BASE_URL}/user`;
 const API_URL = 'http://localhost:8080/api/user';
+
+const handleResponse = async (response: Response) => {
+  if (response.ok) {
+    const { message, token } = await response.json();
+    setCookie('authorization', token, 7);
+    return { success: true, message, token };
+  } else {
+    const { message } = await response.json();
+    return { success: false, message };
+  }
+};
+
+const handleError = (error: unknown) => {
+  const { message } = error as Error;
+  return { success: false, message: `Ошибка: ${message}` };
+};
 
 export const registerUser = async (formData: {
   name: string;
@@ -16,18 +31,9 @@ export const registerUser = async (formData: {
       },
       body: JSON.stringify(formData),
     });
-
-    if (response.ok) {
-      const data = await response.json();
-      setCookie('authorization', data.token, 7);
-      return { success: true, message: data.message };
-    } else {
-      const error = await response.json();
-      return { success: false, message: error.message };
-    }
+    return await handleResponse(response);
   } catch (error) {
-    const err = error as Error;
-    return { success: false, message: `Ошибка: ${err.message}` };
+    return handleError(error);
   }
 };
 
@@ -43,20 +49,8 @@ export const loginUser = async (loginData: {
       },
       body: JSON.stringify(loginData),
     });
-
-    if (response.ok) {
-      const data = await response.json();
-      setCookie('authorization', data.token, 7);
-      return { success: true, message: data.message };
-    } else {
-      const error = await response.json();
-      return {
-        success: false,
-        message: error.message,
-      };
-    }
+    return await handleResponse(response);
   } catch (error) {
-    const err = error as Error;
-    return { success: false, message: `Ошибка: ${err.message}` };
+    return handleError(error);
   }
 };
