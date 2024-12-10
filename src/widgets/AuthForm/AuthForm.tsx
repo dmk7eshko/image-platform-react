@@ -1,5 +1,5 @@
 import { ChangeEvent, useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 
 import { loginUser, registerUser } from '../../entities/users/api';
 import { Button } from '../../shared/Button';
