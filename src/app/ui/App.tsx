@@ -1,5 +1,28 @@
-import { AuthPage } from '../../pages/authPage/ui/authPage';
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router';
+
+import { AuthPage } from '../../pages/AuthPage';
+import { HomePage } from '../../pages/HomePage';
+import { getCookie } from '../../shared/lib';
+
+const ProtectedRoute = ({ children }: { children: JSX.Element }) => {
+  const authCookie = getCookie('authorization');
+  return authCookie ? children : <Navigate to="/auth" />;
+};
 
 export const App = () => {
-  return <AuthPage />;
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route
+          path="/"
+          element={
+            <ProtectedRoute>
+              <HomePage />
+            </ProtectedRoute>
+          }
+        />
+        <Route path="/auth" element={<AuthPage />} />
+      </Routes>
+    </BrowserRouter>
+  );
 };
